@@ -5,6 +5,9 @@ version: 1.0.0+1
 dependencies:
   flutter:
     sdk: flutter
+  image_picker: ^0.4.10
+  image: ^2.0.4
+  path_provider: ^0.4.1
 
 dev_dependencies:
   flutter_test:
