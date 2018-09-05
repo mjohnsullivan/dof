@@ -7,12 +7,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as image;
 import 'package:path_provider/path_provider.dart';
 
-void main() => runApp(new MyApp());
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
+    return MaterialApp(
       title: 'Photo App',
       home: MyHomePage(),
     );
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -52,7 +52,8 @@ class _MyHomePageState extends State<MyHomePage> {
               textAlign: TextAlign.center,
             );
           } else {
-            return Container();
+            return Image.asset('assets/dash.png');
+            ;
           }
         });
   }
@@ -65,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => _onImageButtonPressed(ImageSource.camera),
         heroTag: 'image1',
-        child: const Icon(Icons.camera_alt),
+        child: const Icon(Icons.photo_camera),
       ),
     );
   }
@@ -80,7 +81,7 @@ class ApplyFilterWidget extends StatefulWidget {
   ApplyFilterState createState() => ApplyFilterState();
 }
 
-enum FilterOptions { None, BlackAndWhite, Vintage, Vignette, Emboss }
+enum FilterOptions { None, BlackAndWhite, Sepia, Vignette, Emboss }
 
 class ApplyFilterState extends State<ApplyFilterWidget> {
   //Fluwx _fluwx;
@@ -108,28 +109,21 @@ class ApplyFilterState extends State<ApplyFilterWidget> {
           heroTag: 'image0',
           child: const Icon(Icons.share),
         ),
-        Row(children: [
-          RaisedButton(
-            child: Text('no filter'),
-            onPressed: () => drawImage(FilterOptions.None)
-          ),
-          RaisedButton(
-            child: Text('black and white'),
-            onPressed: () => drawImage(FilterOptions.BlackAndWhite)
-          ),
-          RaisedButton(
-            child: Text('vintage'),
-            onPressed: () => drawImage(FilterOptions.Vintage),
-          ),
-          RaisedButton(
-            child: Text('vignette'),
-            onPressed: () => drawImage(FilterOptions.Vignette),
-          ),
-          /*RaisedButton(
-            child: Text('emboss'),
-            onPressed: () => drawImage(FilterOptions.Emboss),
-          )*/
-        ])
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            FilterButton('dashSmall',
+                onTap: () => drawImage(FilterOptions.None)),
+            FilterButton('grayscale',
+                onTap: () => drawImage(FilterOptions.BlackAndWhite)),
+            FilterButton('sepia',
+                onTap: () => drawImage(FilterOptions.Sepia)),
+            FilterButton('vignette',
+                onTap: () => drawImage(FilterOptions.Vignette)),
+            FilterButton('emboss',
+                onTap: () => drawImage(FilterOptions.Emboss)),
+          ],
+        )
       ],
     );
   }
@@ -146,10 +140,27 @@ class ApplyFilterState extends State<ApplyFilterWidget> {
   }
 }
 
+class FilterButton extends StatelessWidget {
+  GestureTapCallback onTap;
+  String filename;
+  FilterButton(this.filename, {this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Image.asset('assets/$filename.png'),
+      ),
+    );
+  }
+}
+
 class FilteredImage extends StatelessWidget {
   final File originalFile;
   final FilterOptions filterState;
-  static int foo =0;
+  static int foo = 0;
   FilteredImage(this.originalFile, this.filterState);
   @override
   Widget build(BuildContext context) {
@@ -157,14 +168,15 @@ class FilteredImage extends StatelessWidget {
       future: _localPath,
       builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
         if (snapshot.hasData) {
-          image.Image unmodifiedImage = image.decodeImage(originalFile.readAsBytesSync());
+          image.Image unmodifiedImage =
+              image.decodeImage(originalFile.readAsBytesSync());
 
           image.Image result = unmodifiedImage;
-          switch(filterState) {
-            case FilterOptions.BlackAndWhite: 
+          switch (filterState) {
+            case FilterOptions.BlackAndWhite:
               result = image.grayscale(unmodifiedImage);
               break;
-            case FilterOptions.Vintage:
+            case FilterOptions.Sepia:
               result = image.sepia(unmodifiedImage);
               break;
             case FilterOptions.Vignette:
@@ -177,7 +189,8 @@ class FilteredImage extends StatelessWidget {
             default:
               break;
           }
-          snapshot.data.writeAsBytesSync(image.encodePng(image.copyRotate(result, 90)));
+          snapshot.data
+              .writeAsBytesSync(image.encodePng(image.copyRotate(result, 90)));
           return Image.file(snapshot.data);
         } else {
           return Image.file(originalFile);
@@ -188,6 +201,7 @@ class FilteredImage extends StatelessWidget {
 
   Future<File> get _localPath async {
     var directory = await getApplicationDocumentsDirectory();
-    return File('${directory.path}/$filterState${originalFile.uri.pathSegments.last}.jpg');
+    return File(
+        '${directory.path}/$filterState${originalFile.uri.pathSegments.last}.jpg');
   }
 }

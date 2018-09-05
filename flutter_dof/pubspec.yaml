@@ -17,3 +17,10 @@ flutter:
   uses-material-design: true
   module:
     androidPackage: com.example.flutterdof
+  assets: 
+    - assets/dash.png
+    - assets/dashSmall.png
+    - assets/emboss.png
+    - assets/grayscale.png
+    - assets/sepia.png
+    - assets/vignette.png
