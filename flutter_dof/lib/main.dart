@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Photo App',
+      theme: ThemeData(primaryColor: Colors.red),
       home: MyHomePage(),
     );
   }
@@ -25,47 +26,51 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Future<File> _imageFile;
+  StreamController<File> _controller;
 
   @override
   void initState() {
     super.initState();
     //Fluwx.registerApp(RegisterModel(appId: "wxd930ea5d5a258f4f"));
+    _controller = new StreamController();
   }
 
-  void _onImageButtonPressed(ImageSource source) {
-    setState(() {
-      _imageFile = ImagePicker.pickImage(source: source, maxHeight: 350.0);
-    });
+  _getImage() async {
+    var imageFile = await ImagePicker.pickImage(
+        source: ImageSource.camera, maxHeight: 400.0);
+    _controller.add(imageFile);
   }
 
-  Widget _previewImage() {
-    return FutureBuilder<File>(
-        future: _imageFile,
-        builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
-          if (snapshot.connectionState == ConnectionState.done &&
-              snapshot.data != null) {
-            return ApplyFilterWidget(snapshot.data);
-          } else if (snapshot.error != null) {
-            return const Text(
-              'Error picking image.',
-              textAlign: TextAlign.center,
-            );
-          } else {
-            return Image.asset('assets/dash.png');
-            ;
-          }
-        });
+  _clearImage() {
+    _controller.add(null);
   }
 
   @override
   Widget build(BuildContext context) {
+    return StreamBuilder(
+        stream: _controller.stream,
+        builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
+          if (snapshot.hasData && snapshot.data != null) {
+            return ApplyFilterWidget(snapshot.data, _clearImage);
+          }
+          return IntroPage(_getImage);
+        });
+  }
+}
+
+class IntroPage extends StatelessWidget {
+  Function callback;
+  IntroPage(this.callback);
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Flutter Photo app')),
-      body: Center(child: _previewImage()),
+      body: Container(
+          color: Color(0xffffffe0),
+          child: Center(child: Image.asset('assets/dash.png'))),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _onImageButtonPressed(ImageSource.camera),
-        heroTag: 'image1',
+        backgroundColor: Colors.red,
+        onPressed: callback,
         child: const Icon(Icons.photo_camera),
       ),
     );
@@ -74,8 +79,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
 class ApplyFilterWidget extends StatefulWidget {
   final File file;
+  final Function callback;
 
-  ApplyFilterWidget(this.file);
+  ApplyFilterWidget(this.file, this.callback);
 
   @override
   ApplyFilterState createState() => ApplyFilterState();
@@ -95,10 +101,15 @@ class ApplyFilterState extends State<ApplyFilterWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        drawImage(_filterState),
-        FloatingActionButton(
+    return Scaffold(
+        appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: widget.callback,
+            ),
+            title: Text('Customize photo')),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.red,
           onPressed: () {
             /*_fluwx.share(WeChatShareImageModel(
                 image: widget.file.uri.toString(),
@@ -106,26 +117,31 @@ class ApplyFilterState extends State<ApplyFilterWidget> {
                     'assets://logo.png', // this is to prevent an OOM when the plugin tries to create a thumbnail. :-P
                 scene: WeChatScene.SESSION));*/
           },
-          heroTag: 'image0',
           child: const Icon(Icons.share),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            FilterButton('dashSmall',
-                onTap: () => drawImage(FilterOptions.None)),
-            FilterButton('grayscale',
-                onTap: () => drawImage(FilterOptions.BlackAndWhite)),
-            FilterButton('sepia',
-                onTap: () => drawImage(FilterOptions.Sepia)),
-            FilterButton('vignette',
-                onTap: () => drawImage(FilterOptions.Vignette)),
-            FilterButton('emboss',
-                onTap: () => drawImage(FilterOptions.Emboss)),
-          ],
-        )
-      ],
-    );
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        body: Container(
+            color: Color(0xffffffe0),
+            child: Column(
+              children: [
+                drawImage(_filterState),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    FilterButton('dashSmall',
+                        onTap: () => drawImage(FilterOptions.None)),
+                    FilterButton('grayscale',
+                        onTap: () => drawImage(FilterOptions.BlackAndWhite)),
+                    FilterButton('sepia',
+                        onTap: () => drawImage(FilterOptions.Sepia)),
+                    FilterButton('vignette',
+                        onTap: () => drawImage(FilterOptions.Vignette)),
+                    FilterButton('emboss',
+                        onTap: () => drawImage(FilterOptions.Emboss)),
+                  ],
+                )
+              ],
+            )));
   }
 
   Widget drawImage(FilterOptions newFilter) {
@@ -205,3 +221,4 @@ class FilteredImage extends StatelessWidget {
         '${directory.path}/$filterState${originalFile.uri.pathSegments.last}.jpg');
   }
 }
+
