@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">Dash of Flutter</string>
+
+    <string name="train_ticket">火车票</string>
+    <string name="taxi">出租车</string>
+    <string name="concert_ticket">演唱会门票</string>
+    <string name="shopping">购物</string>
+    <string name="movie_ticket">电影票</string>
+    <string name="book">看书</string>
+    <string name="fitness">身体素质</string>
+    <string name="chat">聊</string>
+    <string name="phone_call">电话</string>
+    <string name="save_file">保存存档</string>
+    <string name="more_apps">更多应用程序</string>
+    <string name="book_flight">预订航班</string>
+    <string name="map">地图</string>
+    <string name="auction">拍卖</string>
+    <string name="bird_photo">鸟照片</string>
 </resources>
