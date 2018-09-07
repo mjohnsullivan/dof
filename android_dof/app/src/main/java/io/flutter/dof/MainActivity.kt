@@ -19,7 +19,6 @@ class MainActivity : AppCompatActivity(), RecyclerViewAdapter.ItemListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        // setSupportActionBar(toolbar)
 
         arrayList = ArrayList()
         arrayList.add(DataModel(getString(R.string.train_ticket), R.drawable.ic_train_black_24dp, "#09A9FF"))
@@ -53,7 +52,7 @@ class MainActivity : AppCompatActivity(), RecyclerViewAdapter.ItemListener {
 
     override fun onItemClick(item: DataModel) {
         if (item.text == getString(R.string.bird_photo)) {
-            startActivity(Intent(this, IncrementerActivity::class.java))
+            startActivity(Intent(this, BirdPhotoActivity::class.java))
         } else {
             Toast.makeText(applicationContext, item.text, Toast.LENGTH_SHORT).show()
         }

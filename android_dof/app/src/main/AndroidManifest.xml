@@ -20,7 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".IncrementerActivity"></activity>
+        <activity android:name=".BirdPhotoActivity"></activity>
     </application>
 
 </manifest>
