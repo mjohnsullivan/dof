@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-//import 'package:fluwx/fluwx.dart';
+import 'package:fluwx/fluwx.dart';
 import 'package:image/image.dart' as image;
 import 'package:path_provider/path_provider.dart';
 
@@ -31,7 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    //Fluwx.registerApp(RegisterModel(appId: "wxd930ea5d5a258f4f"));
+    Fluwx.registerApp(RegisterModel(appId: "wxd930ea5d5a258f4f"));
     _controller = new StreamController();
   }
 
@@ -90,12 +90,12 @@ class ApplyFilterWidget extends StatefulWidget {
 enum FilterOptions { None, BlackAndWhite, Sepia, Vignette, Emboss }
 
 class ApplyFilterState extends State<ApplyFilterWidget> {
-  //Fluwx _fluwx;
+  Fluwx _fluwx;
   FilterOptions _filterState;
   @override
   void initState() {
     super.initState();
-    //_fluwx = Fluwx();
+    _fluwx = Fluwx();
     _filterState = FilterOptions.None;
   }
 
@@ -111,11 +111,11 @@ class ApplyFilterState extends State<ApplyFilterWidget> {
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.red,
           onPressed: () {
-            /*_fluwx.share(WeChatShareImageModel(
+            _fluwx.share(WeChatShareImageModel(
                 image: widget.file.uri.toString(),
                 thumbnail:
                     'assets://logo.png', // this is to prevent an OOM when the plugin tries to create a thumbnail. :-P
-                scene: WeChatScene.SESSION));*/
+                scene: WeChatScene.SESSION));
           },
           child: const Icon(Icons.share),
         ),

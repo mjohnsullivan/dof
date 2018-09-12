@@ -7,7 +7,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "io.flutter.dof"
+        applicationId "net.sourceforge.simcpux"
         minSdkVersion 21
         targetSdkVersion 27
         versionCode 1
@@ -18,6 +18,13 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
         }
     }
 }
@@ -34,5 +41,10 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
+    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:5.1.4'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.24.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.24.0'
+    implementation 'top.zibin:Luban:1.1.8'
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     implementation project(':flutter')
 }
