@@ -40,10 +40,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-  void deactivate() {
-    super.deactivate();
-    _imageHandler.close();
-  }
+    void deactivate() {
+      super.deactivate();
+      _imageHandler.close();
+    }
 }
 
 class IntroPage extends StatelessWidget {
@@ -56,6 +56,11 @@ class IntroPage extends StatelessWidget {
       body: Container(
           color: Color(0xffffffe0),
           child: Center(child: Image.asset('assets/dash.png'))),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.red,
+        onPressed: _getImage,
+        child: const Icon(Icons.photo_camera),
+      ),
     );
   }
 
@@ -92,14 +97,6 @@ class PhotoViewerState extends State<PhotoViewer> {
     widget._imageHandler.add(null);
   }
 
-  _shareWithWeChat() {
-    /*_fluwx.share(WeChatShareImageModel(
-      image: widget.file.uri.toString(),
-      thumbnail:
-          'assets://logo.png', // this is to prevent an OOM when the plugin tries to create a thumbnail. :-P
-      scene: WeChatScene.SESSION));*/
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,7 +108,13 @@ class PhotoViewerState extends State<PhotoViewer> {
             title: Text('Customize photo')),
         floatingActionButton: FloatingActionButton(
           backgroundColor: Colors.red,
-          onPressed: _shareWithWeChat,
+          onPressed: () {
+            /*_fluwx.share(WeChatShareImageModel(
+                image: widget.file.uri.toString(),
+                thumbnail:
+                    'assets://logo.png', // this is to prevent an OOM when the plugin tries to create a thumbnail. :-P
+                scene: WeChatScene.SESSION));*/
+          },
           child: const Icon(Icons.share),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -120,7 +123,21 @@ class PhotoViewerState extends State<PhotoViewer> {
             child: Column(
               children: [
                 drawImage(_filterState),
-                drawFilterButtons(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    FilterButton('dashSmall',
+                        onTap: () => drawImage(FilterOptions.None)),
+                    FilterButton('grayscale',
+                        onTap: () => drawImage(FilterOptions.BlackAndWhite)),
+                    FilterButton('sepia',
+                        onTap: () => drawImage(FilterOptions.Sepia)),
+                    FilterButton('vignette',
+                        onTap: () => drawImage(FilterOptions.Vignette)),
+                    FilterButton('emboss',
+                        onTap: () => drawImage(FilterOptions.Emboss)),
+                  ],
+                )
               ],
             )));
   }
@@ -134,18 +151,6 @@ class PhotoViewerState extends State<PhotoViewer> {
     } else {
       return FilteredImage(widget.file, _filterState);
     }
-  }
-
-  Widget drawFilterButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        FilterButton('dashSmall', onTap: () => drawImage(FilterOptions.None)),
-        FilterButton('vignette',
-            onTap: () => drawImage(FilterOptions.Vignette)),
-        FilterButton('emboss', onTap: () => drawImage(FilterOptions.Emboss)),
-      ],
-    );
   }
 }
 

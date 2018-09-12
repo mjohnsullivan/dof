@@ -24,6 +24,7 @@ if (flutterVersionName == null) {
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
@@ -46,4 +47,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation 'com.android.support:support-v13:27.1.1'
     implementation 'com.android.support:support-annotations:27.1.1'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }
