@@ -221,4 +221,3 @@ class FilteredImage extends StatelessWidget {
         '${directory.path}/$filterState${originalFile.uri.pathSegments.last}.jpg');
   }
 }
-
