@@ -101,6 +101,13 @@ class PhotoViewerState extends State<PhotoViewer> {
       scene: WeChatScene.SESSION));
   }
 
+  Widget _shareButton() {
+    return FloatingActionButton(
+      backgroundColor: Colors.red,
+      child: const Icon(Icons.share),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -110,11 +117,6 @@ class PhotoViewerState extends State<PhotoViewer> {
               onPressed: _clearImage,
             ),
             title: Text('Customize photo')),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.red,
-          onPressed: _shareWithWeChat,
-          child: const Icon(Icons.share),
-        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         body: Container(
             color: Color(0xffffffe0),
@@ -142,6 +144,8 @@ class PhotoViewerState extends State<PhotoViewer> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         FilterButton('dashSmall', onTap: () => drawImage(FilterOptions.None)),
+        FilterButton('sepia',
+            onTap: () => drawImage(FilterOptions.Sepia)),
         FilterButton('vignette',
             onTap: () => drawImage(FilterOptions.Vignette)),
         FilterButton('emboss', onTap: () => drawImage(FilterOptions.Emboss)),
