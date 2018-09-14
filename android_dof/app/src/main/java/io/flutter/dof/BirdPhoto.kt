@@ -10,18 +10,4 @@ class BirdPhotoActivity : FlutterActivity() {
         super.onCreate(savedInstanceState)
         GeneratedPluginRegistrant.registerWith(this)
     }
-
-    /*
-    override fun createFlutterView(context: Context) : FlutterView {
-        val flutterEngine = FlutterNativeView(this)
-        val flutterView = FlutterView(this, null, flutterEngine)
-        flutterView.setInitialRoute("route1")
-        flutterView.layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-        )
-        Log.w(_tag, "Creating Flutter view")
-        setContentView(flutterView)
-        return flutterView
-    }*/
 }

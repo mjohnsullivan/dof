@@ -52,7 +52,7 @@ class IntroPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Flutter Photo app')), //Flutter照片应用
+      appBar: AppBar(title: Text('Flutter照片应用')),
       body: Container(
           color: Color(0xffffffe0),
           child: Center(child: Image.asset('assets/dash.png'))),
