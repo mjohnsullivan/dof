@@ -40,10 +40,10 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   @override
-    void deactivate() {
-      super.deactivate();
-      _imageHandler.close();
-    }
+  void deactivate() {
+    super.deactivate();
+    _imageHandler.close();
+  }
 }
 
 class IntroPage extends StatelessWidget {
@@ -74,10 +74,12 @@ class IntroPage extends StatelessWidget {
 enum FilterOptions { None, BlackAndWhite, Sepia, Vignette, Emboss }
 
 class PhotoViewer extends StatefulWidget {
-  final File file;
+  final File originalFile;
   final StreamController<File> _imageHandler;
+  File filterFile;
 
-  PhotoViewer(this.file, this._imageHandler);
+  PhotoViewer(this.originalFile, this._imageHandler)
+      : filterFile = originalFile;
 
   @override
   PhotoViewerState createState() => PhotoViewerState();
@@ -110,7 +112,7 @@ class PhotoViewerState extends State<PhotoViewer> {
           backgroundColor: Colors.red,
           onPressed: () {
             _fluwx.share(WeChatShareImageModel(
-                image: widget.file.uri.toString(),
+                image: widget.filterFile.uri.toString(),
                 thumbnail:
                     'assets://logo.png', // this is to prevent an OOM when the plugin tries to create a thumbnail. :-P
                 scene: WeChatScene.SESSION));
@@ -147,9 +149,10 @@ class PhotoViewerState extends State<PhotoViewer> {
       _filterState = newFilter;
     });
     if (_filterState == FilterOptions.None) {
-      return Image.file(widget.file);
+      return Image.file(widget.originalFile);
     } else {
-      return FilteredImage(widget.file, _filterState);
+      return FilteredImage(widget.originalFile,
+          (File newFile) => widget.filterFile = newFile, _filterState);
     }
   }
 }
@@ -174,14 +177,16 @@ class FilterButton extends StatelessWidget {
 class FilteredImage extends StatelessWidget {
   final File originalFile;
   final FilterOptions filterState;
-  static int foo = 0;
-  FilteredImage(this.originalFile, this.filterState);
+  static int index = 0;
+  Function updateFileName;
+  FilteredImage(this.originalFile, this.updateFileName, this.filterState);
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: _localPath,
       builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
         if (snapshot.hasData) {
+          updateFileName(snapshot.data);
           image.Image unmodifiedImage =
               image.decodeImage(originalFile.readAsBytesSync());
 
