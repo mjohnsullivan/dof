@@ -5,10 +5,14 @@ import android.os.Bundle
 
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
+import android.widget.FrameLayout
 import android.widget.Toast
 
 import kotlinx.android.synthetic.main.content_main.*
 import java.util.ArrayList
+import io.flutter.facade.Flutter
+
+
 
 class DataModel(var text: String, var drawable: Int, var color: String)
 
@@ -56,5 +60,23 @@ class MainActivity : AppCompatActivity(), RecyclerViewAdapter.ItemListener {
         } else {
             Toast.makeText(applicationContext, item.text, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    fun makeView() {
+        val flutterView = Flutter.createView(
+                this@MainActivity,
+                lifecycle,
+                "route1"
+        )
+        val layout = FrameLayout.LayoutParams(600, 800)
+        layout.leftMargin = 500
+        layout.topMargin = 1400
+        addContentView(flutterView, layout)
+    }
+
+    fun makeFragment() {
+        val tx = supportFragmentManager.beginTransaction()
+        tx.replace(R.id.toolbar, Flutter.createFragment("route1"))
+        tx.commit()
     }
 }
