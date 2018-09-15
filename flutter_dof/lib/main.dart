@@ -61,12 +61,21 @@ class IntroPage extends StatelessWidget {
 
   _getImage() async {
     var imageFile = await ImagePicker.pickImage(
-        source: ImageSource.camera, maxHeight: 400.0);
+        source: ImageSource.camera, maxHeight: 350.0);
     _imageHandler.add(imageFile);
   }
 }
 
-enum FilterOptions { None, BlackAndWhite, Sepia, Vignette, Emboss }
+enum FilterOptions {
+  None,
+  BlackAndWhite,
+  Sepia,
+  Vignette,
+  HighlightEdges,
+  Pixelate,
+  LowFi,
+  Saturate
+}
 
 class PhotoViewer extends StatefulWidget {
   final File originalFile;
@@ -143,14 +152,30 @@ class PhotoViewerState extends State<PhotoViewer> {
   }
 
   Widget drawFilterButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        FilterButton('dashSmall', onTap: () => drawImage(FilterOptions.None)),
-        FilterButton('sepia', onTap: () => drawImage(FilterOptions.Sepia)),
-        FilterButton('vignette',
-            onTap: () => drawImage(FilterOptions.Vignette)),
-        FilterButton('emboss', onTap: () => drawImage(FilterOptions.Emboss)),
+    return Column(
+      children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            FilterButton('dashSmall',
+                onTap: () => drawImage(FilterOptions.None)),
+            FilterButton('sepia', onTap: () => drawImage(FilterOptions.Sepia)),
+            FilterButton('vignette',
+                onTap: () => drawImage(FilterOptions.Vignette)),
+            FilterButton('sobel',
+                onTap: () => drawImage(FilterOptions.HighlightEdges)),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            FilterButton('lowfi', onTap: () => drawImage(FilterOptions.LowFi)),
+            FilterButton('pixelate',
+                onTap: () => drawImage(FilterOptions.Pixelate)),
+            FilterButton('saturate',
+                onTap: () => drawImage(FilterOptions.Saturate)),
+          ],
+        ),
       ],
     );
   }
@@ -201,8 +226,17 @@ class FilteredImage extends StatelessWidget {
             case FilterOptions.Vignette:
               result = image.vignette(unmodifiedImage);
               break;
-            case FilterOptions.Emboss:
-              result = image.emboss(unmodifiedImage);
+            case FilterOptions.HighlightEdges:
+              result = image.sobel(unmodifiedImage);
+              break;
+            case FilterOptions.Pixelate:
+              result = image.pixelate(unmodifiedImage, 3);
+              break;
+            case FilterOptions.LowFi:
+              result = image.contrast(unmodifiedImage, 150);
+              break;
+            case FilterOptions.Saturate:
+              result = image.adjustColor(unmodifiedImage, saturation: 1.9);
               break;
             case FilterOptions.None:
             default:

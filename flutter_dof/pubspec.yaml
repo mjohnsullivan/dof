@@ -21,7 +21,10 @@ flutter:
   assets: 
     - assets/dash.png
     - assets/dashSmall.png
-    - assets/emboss.png
+    - assets/sobel.png
+    - assets/pixelate.png
     - assets/grayscale.png
+    - assets/saturate.png
+    - assets/lowfi.png
     - assets/sepia.png
     - assets/vignette.png
